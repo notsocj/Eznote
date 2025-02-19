@@ -7,6 +7,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,12 +21,12 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
+
+    private FirebaseAuth mAuth;
     private EditText emailEditText, passwordEditText;
-    private DBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        dbHelper = new DBHelper(this);
 
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
@@ -35,31 +37,41 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        emailEditText = findViewById(R.id.emailEditText);
+        passwordEditText = findViewById(R.id.editTextPassword);
+        mAuth = FirebaseAuth.getInstance();
+
         TextView signUpButton = findViewById(R.id.SignUpLink);
         signUpButton.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, SignUpPage.class);
             startActivity(intent);
         });
 
-        emailEditText = findViewById(R.id.emailEditText);
-        passwordEditText = findViewById(R.id.editTextPassword);
-
-        Button loginButton = findViewById(R.id.loginbutton);
-        loginButton.setOnClickListener(v -> {
-                    String email = emailEditText.getText().toString();
-                    String password = passwordEditText.getText().toString();
-            if (dbHelper.validateLogin(email, password)) {
-                String nickname = dbHelper.getNickname(email);
-
-                // After successful login, go to homepage
-                Intent intent = new Intent(MainActivity.this, HomePage.class);
-                intent.putExtra("nickname", nickname);
-                startActivity(intent);
-                finish();
-            } else {
-                Toast.makeText(this, "Invalid Login", Toast.LENGTH_SHORT).show();
-            }
-        });
 
     }
+
+
+    public void loginUser(View view) {
+        String email = emailEditText.getText().toString().trim();
+        String password = passwordEditText.getText().toString().trim();
+
+        if (email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(this, "Please enter email and password!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(MainActivity.this, HomePage.class);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(this, "Login failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
+
 }

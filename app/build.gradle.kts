@@ -33,7 +33,9 @@ android {
 }
 
 dependencies {
+    implementation("com.google.firebase:firebase-firestore")
     implementation(platform("com.google.firebase:firebase-bom:33.9.0"))
+    implementation("com.google.firebase:firebase-auth")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.10.0")
     implementation("androidx.activity:activity:1.8.1")

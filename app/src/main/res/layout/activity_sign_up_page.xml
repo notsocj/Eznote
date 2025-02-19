@@ -29,6 +29,7 @@
         android:layout_width="119dp"
         android:layout_height="57dp"
         android:layout_marginTop="52dp"
+        android:onClick="saveUserToDatabase"
         android:background="@drawable/buttonrounded"
         android:fontFamily="@font/mainfont"
         android:text="Sign Up"

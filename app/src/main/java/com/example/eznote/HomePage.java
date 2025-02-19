@@ -12,9 +12,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
@@ -23,6 +28,8 @@ public class HomePage extends AppCompatActivity {
     private RecyclerViewAdapter adapter;
     private ArrayList<Model> modelArrayList;
     private RecyclerView recyclerView;
+    private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
 
     private TextView nicknameTextView;
 
@@ -60,19 +67,33 @@ public class HomePage extends AppCompatActivity {
         adapter = new RecyclerViewAdapter(modelArrayList, this);
         recyclerView.setAdapter(adapter);
 
-        nicknameTextView = findViewById(R.id.welcometext);
-        Intent intent = getIntent();
-        String nickname = intent.getStringExtra("nickname");
 
-        if (nickname != null && !nickname.isEmpty()) {
-            nicknameTextView.setText("Hi, " + nickname + "!");
-        } else {
-            nicknameTextView.setText("Welcome!");
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+        nicknameTextView = findViewById(R.id.welcometext);
+
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            fetchUsername(user.getUid());
         }
 
     }
     public boolean onCreateOptionsMenu(Menu menu){
         return true;
+    }
+
+    private void fetchUsername(String userId) {
+        db.collection("users").document(userId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String username = documentSnapshot.getString("username");
+                        nicknameTextView.setText("Welcome, " + username + "!");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(HomePage.this, "Failed to fetch username", Toast.LENGTH_SHORT).show();
+                });
     }
 
 

@@ -93,6 +93,7 @@
         android:id="@+id/loginbutton"
         android:layout_width="119dp"
         android:layout_height="57dp"
+        android:onClick="loginUser"
         android:background="@drawable/buttonrounded"
         android:fontFamily="@font/mainfont"
         android:text="Login"
@@ -101,7 +102,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextPassword"
-        app:layout_constraintVertical_bias="0.169"
+        app:layout_constraintVertical_bias="0.163"
         tools:ignore="HardcodedText" />
 
     <TextView
