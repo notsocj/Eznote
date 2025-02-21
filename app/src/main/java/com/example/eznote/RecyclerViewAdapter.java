@@ -1,60 +1,58 @@
 package com.example.eznote;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
-    private ArrayList<Model> modelArrayList;
+import java.util.List;
+
+public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
+
+    private List<Model> notesList;
     private Context context;
 
-    public RecyclerViewAdapter(ArrayList<Model> modelArrayList, Context context) {
-        this.modelArrayList = modelArrayList;
+    public RecyclerViewAdapter(List<Model> notesList, Context context) {
+        this.notesList = notesList;
         this.context = context;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_row_layout, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.custom_row_layout, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Model model = modelArrayList.get(position);
-
-        if (model.getName() != null && !model.getName().isEmpty()) {
-            holder.profileLetter.setText(model.getName().substring(0, 1));
-        } else {
-            holder.profileLetter.setText("?");
-        }
-
-        holder.notesName.setText(model.getName());
-        holder.notesOverview.setText(model.getNumber());
+        Model note = notesList.get(position);
+        holder.titleTextView.setText(note.getName());
+        holder.contentTextView.setText(note.getNumber());
     }
 
     @Override
     public int getItemCount() {
-        return modelArrayList.size();
+        return notesList.size();
+    }
+
+    public void updateNotes(List<Model> newNotes) {
+        this.notesList.clear();
+        this.notesList.addAll(newNotes);
+        notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView profileLetter, notesName, notesOverview;
+        TextView titleTextView, contentTextView;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
-            profileLetter = itemView.findViewById(R.id.profileletter);
-            notesName = itemView.findViewById(R.id.notesName);
-            notesOverview = itemView.findViewById(R.id.notesOverview);
-
-
+            titleTextView = itemView.findViewById(R.id.notesName);
+            contentTextView = itemView.findViewById(R.id.notesOverview);
         }
     }
 }

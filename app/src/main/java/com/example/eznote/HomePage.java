@@ -4,23 +4,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.Menu;
 import android.view.View;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.core.view.WindowInsetsCompat;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.util.ArrayList;
 
 public class HomePage extends AppCompatActivity {
@@ -31,6 +26,7 @@ public class HomePage extends AppCompatActivity {
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
 
+    private FirebaseUser user;
     private TextView nicknameTextView;
 
     @Override
@@ -38,48 +34,55 @@ public class HomePage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home_page);
+
+        // ✅ Initialize FirebaseAuth and Firestore first
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+
+        // ✅ Initialize Views
+        recyclerView = findViewById(R.id.recyclerView);
+        nicknameTextView = findViewById(R.id.welcometext);
+        addnotes = findViewById(R.id.addnotes);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return WindowInsetsCompat.CONSUMED;
         });
-        modelArrayList = new ArrayList<>();
-
-        recyclerView = findViewById(R.id.recyclerView);
-
-        modelArrayList.add(new Model("To do list for today", "Wash Dish...."));
-        modelArrayList.add(new Model("Terquin bobo", "Overview of the Content"));
-        modelArrayList.add(new Model("Mooaw", "OverView of the Content"));
-        modelArrayList.add(new Model("Name of the Note 4", "OverView of the Content"));
-        modelArrayList.add(new Model("Name of the Note 5 ", "OverView of the Content"));
-        modelArrayList.add(new Model("Name of the Note 6", "OverView of the Content"));
-        modelArrayList.add(new Model("Name of the Note 7", "OverView of the Content"));
-        modelArrayList.add(new Model("Name of the Note 8", "OverView of the Content"));
-        modelArrayList.add(new Model("Name of the Note 9", "OverView of the Content"));
-        modelArrayList.add(new Model("Name of the Note 10", "OverView of the Content"));
-        modelArrayList.add(new Model("Name of the Note 11", "OverView of the Content"));
-        modelArrayList.add(new Model("Name of the Note 12", "OverView of the Content"));
-        modelArrayList.add(new Model("Name of the Note 13", "OverView of the Content"));
-        modelArrayList.add(new Model("Name of the Note 14", "OverView of the Content"));
-        modelArrayList.add(new Model("Name of the Note 15", "OverView of the Content"));
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new RecyclerViewAdapter(modelArrayList, this);
-        recyclerView.setAdapter(adapter);
-
-
-        mAuth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
-        nicknameTextView = findViewById(R.id.welcometext);
 
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
             fetchUsername(user.getUid());
+        } else {
+            // Redirect to login if user is not authenticated
+            Toast.makeText(this, "User not logged in!", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+            return;
         }
 
-    }
-    public boolean onCreateOptionsMenu(Menu menu){
-        return true;
+        // ✅ Initialize modelArrayList before passing it to the adapter
+        modelArrayList = new ArrayList<>();
+        adapter = new RecyclerViewAdapter(modelArrayList, this);
+
+        // ✅ Now it's safe to set up RecyclerView
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
+
+        // Fetch Notes
+        fetchNotes();
+
+        // Add Note Button
+        addnotes.setOnClickListener(v -> startActivity(new Intent(HomePage.this, AddNoteActivity.class)));
+
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            Toast.makeText(this, "User not authenticated!", Toast.LENGTH_SHORT).show();
+            return;
+        } else {
+            Toast.makeText(this, "Authenticated as: " + user.getUid(), Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     private void fetchUsername(String userId) {
@@ -88,13 +91,53 @@ public class HomePage extends AppCompatActivity {
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         String username = documentSnapshot.getString("username");
-                        nicknameTextView.setText("Welcome, " + username + "!");
+                        if (username != null) {
+                            nicknameTextView.setText("Welcome, " + username + "!");
+                        } else {
+                            Toast.makeText(HomePage.this, "Username field missing!", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(HomePage.this, "User document does not exist!", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(HomePage.this, "Failed to fetch username", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(HomePage.this, "Firestore Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
     }
 
 
+    private void fetchNotes() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            Toast.makeText(this, "User not authenticated!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String userId = user.getUid();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("users").document(userId).collection("notes")
+                .orderBy("timestamp")
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        Toast.makeText(this, "Firestore Error: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
+                    if (value == null || value.isEmpty()) {
+                        Toast.makeText(this, "No notes found!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    modelArrayList.clear();
+
+                    for (var doc : value.getDocuments()) {
+                        String title = doc.getString("title");
+                        String content = doc.getString("content");
+                        modelArrayList.add(new Model(title, content));
+                    }
+
+                    adapter.notifyDataSetChanged();
+                });
+    }
 }

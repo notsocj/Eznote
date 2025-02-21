@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    tools:context=".AddNoteActivity"
+    android:id="@+id/main"
+    android:background="@color/loginBG"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/titleEditText"
+        android:layout_width="match_parent"
+        android:fontFamily="@font/mainfont"
+        android:layout_height="wrap_content"
+        android:hint="Title"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:padding="8dp"/>
+
+    <EditText
+        android:id="@+id/contentEditText"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@android:drawable/editbox_background"
+        android:fontFamily="@font/mainfont"
+        android:gravity="top"
+        android:hint="Write your note here..."
+        android:padding="30dp"
+        android:textSize="16sp" />
+
+    <Button
+        android:id="@+id/saveNoteButton"
+        android:background="@drawable/buttonrounded"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/mainfont"
+        android:text="Save Note"
+        android:layout_marginTop="10dp"/>
+</LinearLayout>
