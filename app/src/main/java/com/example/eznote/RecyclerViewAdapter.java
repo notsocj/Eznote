@@ -33,6 +33,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         Model note = notesList.get(position);
         holder.titleTextView.setText(note.getName());
         holder.contentTextView.setText(note.getNumber());
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onNoteClick(note);
+            }
+        });
     }
 
     @Override
@@ -55,4 +60,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             contentTextView = itemView.findViewById(R.id.notesOverview);
         }
     }
+    public interface OnNoteClickListener {
+        void onNoteClick(Model note);
+    }
+
+    private OnNoteClickListener listener;
+
+    public void setOnNoteClickListener(OnNoteClickListener listener) {
+        this.listener = listener;
+    }
+
 }

@@ -1,7 +1,8 @@
 package com.example.eznote;
 
 public class Model {
-    String name, number;
+    private String name, number, content;
+    private String docId;
 
     public String getNumber() {
         return number;
@@ -19,8 +20,15 @@ public class Model {
         this.name = name;
     }
 
-    public Model(String name, String number) {
+
+    public Model(String name, String number, String content, String docId) {
         this.name = name;
         this.number = number;
+        this.content = content;
+        this.docId = docId;
     }
+    public String getContent() { return content; }
+    public String getDocId() { return docId; }
+
+
 }

@@ -74,14 +74,10 @@ public class HomePage extends AppCompatActivity {
 
         // Add Note Button
         addnotes.setOnClickListener(v -> startActivity(new Intent(HomePage.this, AddNoteActivity.class)));
-
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) {
-            Toast.makeText(this, "User not authenticated!", Toast.LENGTH_SHORT).show();
-            return;
-        } else {
-            Toast.makeText(this, "Authenticated as: " + user.getUid(), Toast.LENGTH_SHORT).show();
-        }
+        adapter.setOnNoteClickListener(note -> {
+            EditNoteDialog dialog = EditNoteDialog.newInstance(note.getName(), note.getContent(), note.getDocId());
+            dialog.show(getSupportFragmentManager(), "EditNoteDialog");
+        });
 
     }
 
@@ -133,8 +129,10 @@ public class HomePage extends AppCompatActivity {
 
                     for (var doc : value.getDocuments()) {
                         String title = doc.getString("title");
+                        String number = doc.getString("number");
                         String content = doc.getString("content");
-                        modelArrayList.add(new Model(title, content));
+                        String docId = doc.getId();
+                        modelArrayList.add(new Model(title, number, content, docId));
                     }
 
                     adapter.notifyDataSetChanged();

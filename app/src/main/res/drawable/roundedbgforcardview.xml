@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Stroke Layer -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent"/> <!-- Transparent Background -->
+            <corners android:radius="16dp"/> <!-- Matches cardCornerRadius -->
+            <stroke android:width="3dp" android:color="@color/black"/> <!-- Border color and width -->
+        </shape>
+    </item>
+
+    <!-- Card Background Layer -->
+    <item android:top="3dp" android:bottom="3dp" android:left="3dp" android:right="3dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/white"/> <!-- Card Background -->
+            <corners android:radius="16dp"/> <!-- Matches cardCornerRadius -->
+        </shape>
+    </item>
+
+</layer-list>
