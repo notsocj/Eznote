@@ -19,18 +19,30 @@
         android:textSize="30sp"
         android:padding="8dp"/>
 
-    <EditText
-        android:id="@+id/contentEditText"
+    <ScrollView
         android:layout_width="match_parent"
-        android:shadowRadius="20"
-        android:layout_height="592dp"
+        android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@android:drawable/editbox_background"
-        android:fontFamily="@font/mainfont"
-        android:gravity="top"
-        android:hint="Write your note here..."
-        android:padding="30dp"
-        android:textSize="16sp" />
+        android:fillViewport="true">
+
+        <EditText
+            android:id="@+id/contentEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/editbox_background"
+            android:fontFamily="@font/mainfont"
+            android:gravity="top"
+            android:hint="Write your note here..."
+            android:padding="30dp"
+            android:shadowRadius="20"
+            android:textSize="16sp"
+            android:scrollbars="vertical"
+            android:overScrollMode="always"
+            android:inputType="textMultiLine|textCapSentences"
+            android:maxLines="999"
+            android:focusable="true"
+            android:focusableInTouchMode="true"/>
+    </ScrollView>
 
     <Button
         android:id="@+id/saveNoteButton"

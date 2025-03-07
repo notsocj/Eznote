@@ -93,13 +93,28 @@
             android:layout_width="330dp"
             android:layout_height="55dp"
             android:layout_marginTop="4dp"
-            android:textColor="@color/black"
             android:ems="10"
             android:inputType="textPassword"
+            android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.305"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/password" />
+
+        <TextView
+            android:id="@+id/forgotPasswordLink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="@font/mainfont"
+            android:text="Forgot Password?"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.054"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editTextPassword" />
 
         <Button
             android:id="@+id/loginbutton"
@@ -115,8 +130,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.502"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextPassword"
-            app:layout_constraintVertical_bias="0.32"
+            app:layout_constraintTop_toBottomOf="@+id/forgotPasswordLink"
+            app:layout_constraintVertical_bias="0.222"
             tools:ignore="HardcodedText" />
 
         <TextView

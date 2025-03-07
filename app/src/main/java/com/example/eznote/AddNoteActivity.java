@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.text.method.ScrollingMovementMethod;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,6 +37,8 @@ public class AddNoteActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         saveNoteButton.setOnClickListener(v -> saveNote());
+
+        contentEditText.setMovementMethod(new ScrollingMovementMethod());
     }
 
     private void saveNote() {

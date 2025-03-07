@@ -47,6 +47,11 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        TextView forgotPasswordLink = findViewById(R.id.forgotPasswordLink);
+        forgotPasswordLink.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, ForgotPasswordActivity.class);
+            startActivity(intent);
+        });
 
     }
 

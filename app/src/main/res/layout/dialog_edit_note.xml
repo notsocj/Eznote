@@ -22,18 +22,24 @@
             android:layout_marginBottom="10dp"
             android:hint="Title" />
 
-        <EditText
-            android:id="@+id/editContent"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/mainfont"
-            android:hint="Content"
-            android:padding="10dp"
-            android:background="@drawable/roundedcornerbg"
-            android:layout_marginBottom="10dp"
-            android:minHeight="300dp"
-            android:gravity="top"
-            android:inputType="textMultiLine" />
+            android:layout_height="300dp"
+            android:fillViewport="true"
+            android:background="@drawable/roundedcornerbg">
+
+            <EditText
+                android:id="@+id/editContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/mainfont"
+                android:hint="Content"
+                android:padding="10dp"
+                android:gravity="top"
+                android:background="@null"
+                android:inputType="textMultiLine"
+                android:scrollbars="vertical" />
+        </ScrollView>
 
         <Button
             android:id="@+id/btnSave"
@@ -42,6 +48,7 @@
             android:fontFamily="@font/mainfont"
             android:textColor="@color/white"
             android:background="@drawable/roundedcornerbg"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:text="Save" />
 
